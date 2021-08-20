@@ -1276,8 +1276,24 @@ int tls_construct_client_hello(SSL *s, WPACKET *pkt)
         }
     }
 #endif
+    const char* enforce_compression_no_compression = getenv("ENFORCE_COMPRESSION_NO_COMPRESSION");
+    if ((enforce_compression_no_compression != NULL) && (strcmp(enforce_compression_no_compression, "1") == 0)) {
+        /* Hardcoded add the compression method for testing*/
+        if (!WPACKET_put_bytes_u8(pkt, 1)) {
+            SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_CONSTRUCT_CLIENT_HELLO,
+                    ERR_R_INTERNAL_ERROR);
+            return 0;
+        }
+    }
+
     /* Add the NULL method */
-    if (!WPACKET_put_bytes_u8(pkt, 0) || !WPACKET_close(pkt)) {
+    const char* enforce_only_compression = getenv("ENFORCE_ONLY_COMPRESSION");
+    char compression_enabled = 0;
+    if ((enforce_only_compression != NULL) && (strcmp(enforce_only_compression, "1") == 0)) {
+        compression_enabled = 1;
+    }
+
+    if (!WPACKET_put_bytes_u8(pkt, compression_enabled) || !WPACKET_close(pkt)) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_CONSTRUCT_CLIENT_HELLO,
                  ERR_R_INTERNAL_ERROR);
         return 0;
