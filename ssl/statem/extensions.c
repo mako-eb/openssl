@@ -276,13 +276,6 @@ static const EXTENSION_DEFINITION ext_defs[] = {
     INVALID_EXTENSION,
 #endif
     {
-        TLSEXT_TYPE_extended_master_secret,
-        SSL_EXT_CLIENT_HELLO | SSL_EXT_TLS1_2_SERVER_HELLO
-        | SSL_EXT_TLS1_2_AND_BELOW_ONLY,
-        init_ems, tls_parse_ctos_ems, tls_parse_stoc_ems,
-        tls_construct_stoc_ems, tls_construct_ctos_ems, final_ems
-    },
-    {
         TLSEXT_TYPE_signature_algorithms_cert,
         SSL_EXT_CLIENT_HELLO | SSL_EXT_TLS1_3_CERTIFICATE_REQUEST,
         init_sig_algs_cert, tls_parse_ctos_sig_algs_cert,

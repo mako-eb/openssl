@@ -144,6 +144,14 @@ int main(int argc, char *argv[])
      */
     win32_utf8argv(&argc, &argv);
 #endif
+    char* enforce_alert_fatal = getenv("ENFORCE_ALERT_FATAL");
+    ((enforce_alert_fatal != NULL) && (strcmp(enforce_alert_fatal, "1") == 0)) ? BIO_printf(bio_err, "SSL_TLSEXT_ERR_ALERT_FATAL") :
+    BIO_printf(bio_err, "SSL_TLSEXT_ERR_NOACK");
+
+    BIO_printf(bio_err, enforce_alert_fatal);
+
+
+    return 1;
 
     p = getenv("OPENSSL_DEBUG_MEMORY");
     if (p != NULL && strcmp(p, "on") == 0)

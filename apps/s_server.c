@@ -705,8 +705,8 @@ static int alpn_cb(SSL *s, const unsigned char **out, unsigned char *outlen,
     if (SSL_select_next_proto
         ((unsigned char **)out, outlen, alpn_ctx->data, alpn_ctx->len, in,
          inlen) != OPENSSL_NPN_NEGOTIATED) {
-        char* enforce_alert_fatal = getenv("ENFORCE_ALERT_FATAL");
-        return ((enforce_alert_fatal != NULL) && (strcmp(enforce_alert_fatal, "1") == 0)) ? SSL_TLSEXT_ERR_ALERT_FATAL : SSL_TLSEXT_ERR_NOACK;
+        const char* enforce_alert_fatal = getenv("ENFORCE_ALERT_FATAL");
+        return ((enforce_alert_fatal != NULL) && (strcmp(enforce_alert_fatal, "1") == 0)) ? SSL_TLSEXT_ERR_ALERT_FATAL  : SSL_TLSEXT_ERR_NOACK;
     }
 
     if (!s_quiet) {
