@@ -173,12 +173,13 @@ int OCSP_parse_url(const char *url, char **phost, char **pport, char **ppath,
     p = host;
     if (host[0] == '[') {
         /* ipv6 literal */
-        host++;
         p = strchr(host, ']');
         if (!p)
             goto parse_err;
-        *p = '\0';
-        p++;
+        *phost = OPENSSL_strndup(host, ++p - host);
+    }
+    else {
+        *phost = OPENSSL_strdup(host);
     }
 
     /* Look for optional ':' for port number */
@@ -190,8 +191,6 @@ int OCSP_parse_url(const char *url, char **phost, char **pport, char **ppath,
     *pport = OPENSSL_strdup(port);
     if (!*pport)
         goto mem_err;
-
-    *phost = OPENSSL_strdup(host);
 
     if (!*phost)
         goto mem_err;

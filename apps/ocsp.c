@@ -99,7 +99,7 @@ static void make_ocsp_response(BIO *err, OCSP_RESPONSE **resp, OCSP_REQUEST *req
                               int nmin, int ndays, int badsig);
 
 static char **lookup_serial(CA_DB *db, ASN1_INTEGER *ser);
-static BIO *init_responder(const char *port);
+static BIO *init_responder(const char *port, const char *host);
 static int do_responder(OCSP_REQUEST **preq, BIO **pcbio, BIO *acbio, int timeout);
 static int send_ocsp_response(BIO *cbio, OCSP_RESPONSE *resp);
 static void log_message(int level, const char *fmt, ...);
@@ -525,7 +525,7 @@ int ocsp_main(int argc, char **argv)
 
     /* Have we anything to do? */
     if (req == NULL && reqin == NULL
-        && respin == NULL && !(port != NULL && ridx_filename != NULL))
+        && respin == NULL && !((port != NULL || host != NULL) && ridx_filename != NULL))
         goto opthelp;
 
     out = bio_open_default(outfile, 'w', FORMAT_TEXT);
@@ -547,8 +547,8 @@ int ocsp_main(int argc, char **argv)
         }
     }
 
-    if (req == NULL && port != NULL) {
-        acbio = init_responder(port);
+    if (req == NULL && (port != NULL || host != NULL)) {
+        acbio = init_responder(port, host);
         if (acbio == NULL)
             goto end;
     }
@@ -1286,7 +1286,7 @@ static char **lookup_serial(CA_DB *db, ASN1_INTEGER *ser)
 
 /* Quick and dirty OCSP server: read in and parse input request */
 
-static BIO *init_responder(const char *port)
+static BIO *init_responder(const char *port, const char *host)
 {
 #ifdef OPENSSL_NO_SOCK
     BIO_printf(bio_err,
@@ -1299,9 +1299,18 @@ static BIO *init_responder(const char *port)
     if (bufbio == NULL)
         goto err;
     acbio = BIO_new(BIO_s_accept());
-    if (acbio == NULL
-        || BIO_set_bind_mode(acbio, BIO_BIND_REUSEADDR) < 0
-        || BIO_set_accept_port(acbio, port) < 0) {
+    if (acbio == NULL || BIO_set_bind_mode(acbio, BIO_BIND_REUSEADDR) < 0) {
+        log_message(LOG_ERR, "Error setting up accept BIO");
+        goto err;
+    }
+
+    if (host != NULL) { 
+        if (BIO_set_accept_name(acbio, host) < 0) {
+            log_message(LOG_ERR, "Error setting up accept BIO");
+            goto err;
+        }
+    }
+    else if (BIO_set_accept_port(acbio, port) < 0) {
         log_message(LOG_ERR, "Error setting up accept BIO");
         goto err;
     }
