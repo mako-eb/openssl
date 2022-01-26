@@ -845,6 +845,11 @@ int tls_construct_extensions(SSL *s, WPACKET *pkt, unsigned int context,
                                 X509 *x, size_t chainidx);
         EXT_RETURN ret;
 
+        const char* disable_extms = getenv("DISABLE_EXTMS");
+        if (thisexd->type == TLSEXT_TYPE_extended_master_secret && disable_extms != NULL && strcmp(disable_extms, "1") == 0) {
+            continue;
+        }
+
         /* Skip if not relevant for our context */
         if (!should_add_extension(s, thisexd->context, context, max_version))
             continue;
