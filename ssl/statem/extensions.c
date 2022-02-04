@@ -705,8 +705,7 @@ int tls_parse_extension(SSL *s, TLSEXT_INDEX idx, int context,
         /* We are handling a built-in extension */
         const EXTENSION_DEFINITION *extdef = &ext_defs[idx];
 
-        const char* disable_extms = getenv("DISABLE_EXTMS");
-        if (extdef->type == TLSEXT_TYPE_extended_master_secret && disable_extms != NULL && strcmp(disable_extms, "1") == 0) {
+        if (extdef->type == TLSEXT_TYPE_extended_master_secret && EBEVAL_disable_extms()) {
             return 1;
         }
 
@@ -845,8 +844,7 @@ int tls_construct_extensions(SSL *s, WPACKET *pkt, unsigned int context,
                                 X509 *x, size_t chainidx);
         EXT_RETURN ret;
 
-        const char* disable_extms = getenv("DISABLE_EXTMS");
-        if (thisexd->type == TLSEXT_TYPE_extended_master_secret && disable_extms != NULL && strcmp(disable_extms, "1") == 0) {
+        if (thisexd->type == TLSEXT_TYPE_extended_master_secret && EBEVAL_disable_extms()) {
             continue;
         }
 

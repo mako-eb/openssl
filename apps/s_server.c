@@ -705,8 +705,7 @@ static int alpn_cb(SSL *s, const unsigned char **out, unsigned char *outlen,
     if (SSL_select_next_proto
         ((unsigned char **)out, outlen, alpn_ctx->data, alpn_ctx->len, in,
          inlen) != OPENSSL_NPN_NEGOTIATED) {
-        char* enforce_alpn_alert_fatal = getenv("ENFORCE_ALPN_ALERT_FATAL");
-        return ((enforce_alpn_alert_fatal != NULL) && (strcmp(enforce_alpn_alert_fatal, "1") == 0)) ? SSL_TLSEXT_ERR_ALERT_FATAL : SSL_TLSEXT_ERR_NOACK;
+        return EBEVAL_enforce_alpn_alert_fatal() ? SSL_TLSEXT_ERR_ALERT_FATAL : SSL_TLSEXT_ERR_NOACK;
     }
 
     if (!s_quiet) {
@@ -1784,6 +1783,10 @@ int s_server_main(int argc, char *argv[])
     }
 
     SSL_CTX_clear_mode(ctx, SSL_MODE_AUTO_RETRY);
+    
+    int security_level = EBEVAL_get_security_level();
+    BIO_printf(bio_s_out, "Setting ctx security level: %d\n", security_level);
+    SSL_CTX_set_security_level(ctx, security_level);
 
     if (sdebug)
         ssl_ctx_security_debug(ctx, sdebug);
