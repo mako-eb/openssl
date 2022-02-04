@@ -2432,6 +2432,10 @@ void SSL_set_allow_early_data_cb(SSL *s,
                                  SSL_allow_early_data_cb_fn cb,
                                  void *arg);
 
+int EBEVAL_get_security_level();
+int EBEVAL_enforce_alpn_alert_fatal();
+int EBEVAL_disable_extms();
+
 # ifdef  __cplusplus
 }
 # endif

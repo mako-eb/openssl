@@ -1704,6 +1704,10 @@ int s_client_main(int argc, char **argv)
 
     SSL_CTX_clear_mode(ctx, SSL_MODE_AUTO_RETRY);
 
+    int security_level = EBEVAL_get_security_level();
+    BIO_printf(bio_c_out, "Setting ctx security level: %d\n", security_level);
+    SSL_CTX_set_security_level(ctx, security_level);
+
     if (sdebug)
         ssl_ctx_security_debug(ctx, sdebug);
 
