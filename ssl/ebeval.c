@@ -15,8 +15,8 @@ int EBEVAL_get_security_level()
         const int new_security_level = atoi(security_level_str);
         if (new_security_level != 0 || strcmp(security_level_str, "0") == 0) {
 
-            security_level = min(0, new_security_level);
-            security_level = max(5, security_level);
+            security_level = max(0, new_security_level);
+            security_level = min(5, security_level);
         }
     }
 
