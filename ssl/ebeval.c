@@ -1,8 +1,17 @@
 
 #include "ssl_local.h"
 
-int min(int a, int b) { return a < b ? a : b; }
-int max(int a, int b) { return a > b ? a : b; }
+static int min(int a, int b) { return a < b ? a : b; }
+static int max(int a, int b) { return a > b ? a : b; }
+
+static int is_eval_set(const char* eval)
+{   
+    if (eval != NULL) {
+        const char* eval_value = getenv(eval);
+        return (eval_value != NULL && strcmp(eval_value, "1") == 0);
+    }
+    return 0;
+}
 
 int EBEVAL_get_security_level()
 {
@@ -25,12 +34,20 @@ int EBEVAL_get_security_level()
 
 int EBEVAL_enforce_alpn_alert_fatal()
 {
-    const char* enforce_alpn_alert_fatal = getenv("ENFORCE_ALPN_ALERT_FATAL");
-    return (enforce_alpn_alert_fatal != NULL && strcmp(enforce_alpn_alert_fatal, "1") == 0);
+    return is_eval_set("ENFORCE_ALPN_ALERT_FATAL");
 }
 
 int EBEVAL_disable_extms()
 {
-    const char* disable_extms = getenv("DISABLE_EXTMS");
-    return (disable_extms != NULL && strcmp(disable_extms, "1") == 0);
+    return is_eval_set("DISABLE_EXTMS");
+}
+
+int EBEVAL_enable_dtls_comp()
+{
+    return is_eval_set("ENABLE_DTLS_COMP");
+}
+
+int EBEVAL_disable_null_comp()
+{
+    return is_eval_set("DISABLE_NULL_COMP");
 }

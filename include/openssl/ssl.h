@@ -2435,6 +2435,8 @@ void SSL_set_allow_early_data_cb(SSL *s,
 int EBEVAL_get_security_level();
 int EBEVAL_enforce_alpn_alert_fatal();
 int EBEVAL_disable_extms();
+int EBEVAL_enable_dtls_comp();
+int EBEVAL_disable_null_comp();
 
 # ifdef  __cplusplus
 }
