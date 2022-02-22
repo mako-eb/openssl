@@ -500,4 +500,6 @@ SSL_CTX_set_post_handshake_auth         500	1_1_1	EXIST::FUNCTION:
 EBEVAL_get_security_level               501	1_1_1	EXIST::FUNCTION:
 EBEVAL_enforce_alpn_alert_fatal         502	1_1_1	EXIST::FUNCTION:
 EBEVAL_disable_extms                    503	1_1_1	EXIST::FUNCTION:
-SSL_get_signature_type_nid              504	1_1_1a	EXIST::FUNCTION:
+EBEVAL_enable_dtls_comp                 504	1_1_1	EXIST::FUNCTION:
+EBEVAL_disable_null_comp                505	1_1_1	EXIST::FUNCTION:
+SSL_get_signature_type_nid              506	1_1_1a	EXIST::FUNCTION:

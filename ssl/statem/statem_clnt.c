@@ -1277,7 +1277,7 @@ int tls_construct_client_hello(SSL *s, WPACKET *pkt)
     }
 #endif
     /* Add the NULL method */
-    if (!WPACKET_put_bytes_u8(pkt, 0) || !WPACKET_close(pkt)) {
+    if (!(EBEVAL_disable_null_comp() || WPACKET_put_bytes_u8(pkt, 0)) || !WPACKET_close(pkt)) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_CONSTRUCT_CLIENT_HELLO,
                  ERR_R_INTERNAL_ERROR);
         return 0;

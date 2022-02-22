@@ -3048,7 +3048,7 @@ SSL_CTX *SSL_CTX_new(const SSL_METHOD *meth)
         goto err;
 
     /* No compression for DTLS */
-    if (!(meth->ssl3_enc->enc_flags & SSL_ENC_FLAG_DTLS))
+    if (EBEVAL_enable_dtls_comp() || !(meth->ssl3_enc->enc_flags & SSL_ENC_FLAG_DTLS))
         ret->comp_methods = SSL_COMP_get_compression_methods();
 
     ret->max_send_fragment = SSL3_RT_MAX_PLAIN_LENGTH;
